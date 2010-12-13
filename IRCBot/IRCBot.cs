@@ -9,77 +9,83 @@ using IRCBot.Plugins;
 
 namespace IRCBot
 {
-    class IRCBot
-        : IRCConnection, IIRCBot
-    {
+	class IRCBot
+		: IRCConnection, IIRCBot
+	{
 
-        #region Subscription
+		#region Subscription
 
-        class Subscription
-        {
-            public Regex Trigger { get; set; }
-            public Action<IRCMessage> Callback { get; set; }
-        }
+		class Subscription
+		{
+			public Regex Trigger { get; set; }
+			public Action<IRCMessage> Callback { get; set; }
+		}
 
-        #endregion
+		#endregion
 
-        List<IIRCPlugin> _plugins;
-        List<Subscription> _subscriptions
-            = new List<Subscription>();
+		List<IIRCPlugin> _plugins;
+		List<Subscription> _subscriptions
+			= new List<Subscription>();
 
 
-        public IRCBot(string host, ushort port, string nick)
-            : base(host, port, nick, true)
-        {
-            LoadPlugins();
+		public IRCBot(string host, ushort port, string nick)
+			: base(host, port, nick, true)
+		{
+			LoadPlugins();
 
-            MessageReceived += OnMessageReceived;
-        }
+			MessageReceived += OnMessageReceived;
+		}
 
-        #region Plugins
+		#region Plugins
 
-        private void LoadPlugins()
-        {
-            Type[] emptyTypeArray = new Type[0];
+		private void LoadPlugins()
+		{
+			Type[] emptyTypeArray = new Type[0];
 
-            _plugins = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                        from type in assembly.GetTypes()
-                        where type.GetInterfaces().Contains(typeof(IIRCPlugin))
-                            && type.IsAbstract == false
-                            && type.GetConstructor(emptyTypeArray) != null
-                        select type.GetConstructor(emptyTypeArray).Invoke(null)
-                        ).Cast<IIRCPlugin>().ToList();
+			_plugins = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+						from type in assembly.GetTypes()
+						where type.GetInterfaces().Contains(typeof(IIRCPlugin))
+							&& type.IsAbstract == false
+							&& type.GetConstructor(emptyTypeArray) != null
+						select type.GetConstructor(emptyTypeArray).Invoke(null)
+						).Cast<IIRCPlugin>().ToList();
 
-            foreach (var plugin in _plugins)
-                plugin.Initialize(this);
-        }
+			foreach (var plugin in _plugins)
+				plugin.Initialize(this);
+		}
 
-        #endregion
+		#endregion
 
-        #region IIRCBot Members
+		#region IIRCBot Members
 
-        public void SubscribeToTrigger(string trigger, Action<IRCMessage> callback)
-        {
-            if (!_subscriptions.Any(s => s.Trigger.ToString() == trigger))
-                _subscriptions.Add(new Subscription()
-                {
-                    Trigger = new Regex(trigger),
-                    Callback = callback
-                });
-        }
+		public IList<IIRCPlugin> Plugins
+		{
+			get { return _plugins; }
+		}
 
-        #endregion
+		public void SubscribeToMessage(string trigger, Action<IRCMessage> callback)
+		{
+			if (!_subscriptions.Any(s => s.Trigger.ToString() == trigger))
+				_subscriptions.Add(new Subscription()
+				{
+					Trigger = new Regex(trigger),
+					Callback = callback
+				});
+		}
 
-        void OnMessageReceived(object sender, IRCCommandEventArgs e)
-        {
-            if (e.Message.Command != "PRIVMSG")
-                return;
+		#endregion
 
-            string message = e.Message.Message.Substring(1);
-            var matchedTriggers = _subscriptions.Where(s => s.Trigger.IsMatch(message));
+		void OnMessageReceived(object sender, IRCCommandEventArgs e)
+		{
+			if (e.Message.Command != "PRIVMSG")
+				return;
 
-            foreach (var trigger in matchedTriggers)
-                trigger.Callback(e.Message);
-        }
-    }
+			string message = e.Message.Message.Substring(1);
+			var matchedTriggers = _subscriptions.Where(s => s.Trigger.IsMatch(message));
+
+			foreach (var trigger in matchedTriggers)
+				trigger.Callback(e.Message);
+		}
+
+	}
 }

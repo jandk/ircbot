@@ -10,174 +10,195 @@ using System.Threading;
 
 namespace IRC
 {
-    public class IRCConnection
-        : IDisposable
-    {
+	public class IRCConnection
+		: IIRCConnection, IDisposable
+	{
 
-        #region Fields
+		#region Fields
 
-        private string _host;
-        private ushort _port;
-        private string _nick;
+		private string _host;
+		private ushort _port;
+		private string _nick;
 
-        private TcpClient _client;
-        private NetworkStream _stream;
-        private StreamReader _reader;
-        private StreamWriter _writer;
-        private Thread _listenThread;
+		private bool _quit = false;
 
-        private List<string> _channels
-             = new List<string>();
+		private TcpClient _client;
+		private NetworkStream _stream;
+		private StreamReader _reader;
+		private StreamWriter _writer;
+		private Thread _listenThread;
 
-        #endregion
+		private List<string> _channels
+			 = new List<string>();
 
-        #region Events
+		#endregion
 
-        public event EventHandler<IRCCommandEventArgs> MessageReceived;
+		#region Events
 
-        public void RaiseMessageReceived(IRCMessage message)
-        {
-            if (MessageReceived != null)
-                MessageReceived(this, new IRCCommandEventArgs(message));
-        }
+		public event EventHandler<IRCCommandEventArgs> MessageReceived;
 
-        #endregion
+		public void RaiseMessageReceived(IRCMessage message)
+		{
+			if (MessageReceived != null)
+				MessageReceived(this, new IRCCommandEventArgs(message));
+		}
 
-        public IRCConnection(string host, ushort port, string nick, bool connect)
-        {
-            _host = host;
-            _port = port;
-            _nick = nick;
+		#endregion
 
-            if (connect)
-                Connect();
-        }
+		public IRCConnection(string host, ushort port, string nick, bool connect)
+		{
+			_host = host;
+			_port = port;
+			_nick = nick;
 
-        public void Connect()
-        {
-            Debug.WriteLine("Connecting...", "Debug");
-            _client = new TcpClient(_host, _port);
+			if (connect)
+				Connect();
+		}
 
-            Debug.WriteLine("Getting stream...", "Debug");
-            _stream = _client.GetStream();
-            _reader = new StreamReader(_stream);
-            _writer = new StreamWriter(_stream);
+		public void Connect()
+		{
+			_client = new TcpClient(_host, _port);
+			_stream = _client.GetStream();
+			_reader = new StreamReader(_stream);
+			_writer = new StreamWriter(_stream);
+			_listenThread = new Thread(Listen);
+			_listenThread.Start();
 
-            Debug.WriteLine("Creating thread...", "Debug");
-            _listenThread = new Thread(Listen);
+			IRCMessage message;
 
-            Debug.WriteLine("Starting thread...", "Debug");
-            _listenThread.Start();
+			// Send USER
+			message = new IRCMessage();
+			message.Command = "USER";
+			message.Params.Add(_nick);
+			message.Params.Add("0");
+			message.Params.Add("*");
+			message.Message = _nick;
+			SendRawMessage(message);
 
-            IRCMessage message;
+			// Send NICK
+			message = new IRCMessage();
+			message.Command = "NICK";
+			message.Params.Add(_nick);
+			SendRawMessage(message);
+		}
 
-            // Send USER
-            message = new IRCMessage();
-            message.Command = "USER";
-            message.Params.Add(_nick);
-            message.Params.Add("0");
-            message.Params.Add("*");
-            message.Message = _nick;
-            SendMessage(message);
+		public void Disconnect()
+		{
+			Disconnect(null);
+		}
 
-            message = new IRCMessage();
-            message.Command = "NICK";
-            message.Params.Add(_nick);
-            SendMessage(message);
-        }
+		public void Disconnect(string message)
+		{
+			_quit = true;
 
-        #region Channels
+			IRCMessage ircMessage = new IRCMessage();
+			ircMessage.Command = "QUIT";
 
-        public void Join(string channel)
-        {
-            if (String.IsNullOrEmpty(channel))
-                throw new ArgumentNullException("channel");
+			if (!String.IsNullOrEmpty(message))
+				ircMessage.Message = message;
 
-            channel = channel.ToLowerInvariant();
-            if (_channels.Contains(channel))
-                return;
+			SendRawMessage(ircMessage);
+		}
 
-            IRCMessage message = new IRCMessage();
-            message.Command = "JOIN";
-            message.Params.Add("#" + channel);
-            SendMessage(message);
+		#region Channels
 
-            _channels.Add(channel);
-        }
+		public void Join(string channel)
+		{
+			if (String.IsNullOrEmpty(channel))
+				throw new ArgumentNullException("channel");
 
-        public void Leave(string channel)
-        {
-            if (String.IsNullOrEmpty(channel))
-                throw new ArgumentNullException("channel");
+			channel = channel.ToLowerInvariant();
+			if (_channels.Contains(channel))
+				return;
 
-            channel = channel.ToLowerInvariant();
-            if (!_channels.Contains(channel))
-                return;
+			IRCMessage message = new IRCMessage();
+			message.Command = "JOIN";
+			message.Params.Add("#" + channel);
+			SendRawMessage(message);
 
-            IRCMessage message = new IRCMessage();
-            message.Command = "PART";
-            message.Params.Add("#" + channel);
-            SendMessage(message);
+			_channels.Add(channel);
+		}
 
-            _channels.Remove(channel);
-        }
+		public void Leave(string channel)
+		{
+			if (String.IsNullOrEmpty(channel))
+				throw new ArgumentNullException("channel");
 
-        #endregion
+			channel = channel.ToLowerInvariant();
+			if (!_channels.Contains(channel))
+				return;
 
-        #region Methods - Private
+			IRCMessage message = new IRCMessage();
+			message.Command = "PART";
+			message.Params.Add("#" + channel);
+			SendRawMessage(message);
 
-        /// <summary>
-        ///  Handles the PING message
-        /// </summary>
-        void HandlePing(IRCMessage message)
-        {
-            message.Command = "PONG";
-            SendMessage(message);
-        }
+			_channels.Remove(channel);
+		}
 
-        private void Listen()
-        {
-            try
-            {
-                while (true)
-                {
-                    IRCMessage message = IRCMessage.FromString(_reader.ReadLine());
+		#endregion
 
-                    // Setup some basic handles
-                    if (message.Command == "PING")
-                        HandlePing(message);
+		#region Methods - Private
 
-                    RaiseMessageReceived(message);
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                Console.WriteLine("Stopped listening...");
-            }
-        }
+		/// <summary>
+		///  Handles the PING message
+		/// </summary>
+		private void HandlePing(IRCMessage message)
+		{
+			message.Command = "PONG";
+			SendRawMessage(message);
+		}
 
-        #endregion
+		private void Listen()
+		{
+			while (!_quit)
+			{
+				string rawMessage = _reader.ReadLine();
+				if (String.IsNullOrEmpty(rawMessage))
+					continue;
 
-        #region IIRCConnection Members
+				IRCMessage message = IRCMessage.FromString(rawMessage);
 
-        public void SendMessage(IRCMessage message)
-        {
-            _writer.WriteLine(message.ToString());
-            _writer.Flush();
-        }
+				// Setup some basic handles
+				if (message.Command == "PING")
+					HandlePing(message);
 
-        #endregion
+				RaiseMessageReceived(message);
+			}
 
-        #region IDisposable Members
+			Console.WriteLine("Stopped listening...");
+		}
 
-        public void Dispose()
-        {
-            // Kill the listener thread somehow,
-            // when its stuck in the blocking readline call...
-            _listenThread.Abort();
-        }
+		#endregion
 
-        #endregion
+		#region IIRCConnection Members
 
-    }
+		public void SendRawMessage(IRCMessage message)
+		{
+			_writer.WriteLine(message.ToString());
+			_writer.Flush();
+		}
+
+		public void SendChannelMessage(string channel, string message)
+		{
+			IRCMessage ircMessage = new IRCMessage();
+			ircMessage.Command = "PRIVMSG";
+			ircMessage.Params.Add("#" + channel);
+			ircMessage.Message = message;
+
+			SendRawMessage(ircMessage);
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Disconnect("Bye bye...");
+		}
+
+		#endregion
+
+	}
 }

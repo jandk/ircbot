@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using IRC;
+using System.Text.RegularExpressions;
 
 namespace IRCBot
 {
@@ -9,14 +10,14 @@ namespace IRCBot
     {
         static void Main(string[] args)
         {
-            using (IRCBot bot = new IRCBot("irc.freenode.net", 6667, "tjoenbot"))
-            {
-                bot.Join("heleos");
+			using (IRCBot bot = new IRCBot("irc.freenode.net", 6667, "tjoenbot"))
+			{
+				bot.Join("heleos");
 
-                Console.WriteLine("Press q to quit...");
-                while (Console.ReadKey(true).KeyChar != 'q')
-                    ;
-            }
+				Console.WriteLine("Press q to quit...");
+				while (Console.ReadKey(true).KeyChar != 'q')
+					;
+			}
 
             //const string rawMessage = ":tjoener!~tjoener@vm.tjoener.be PRIVMSG #heleos :dit is nen test";
             //IRCMessage mess = IRCMessage.FromString(rawMessage);

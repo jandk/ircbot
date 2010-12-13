@@ -1,11 +1,16 @@
 ﻿
 using System;
+using System.Collections.Generic;
+
+using IRCBot.Plugins;
 
 namespace IRC
 {
-    public interface IIRCBot
-    {
-        void SendMessage(IRCMessage message);
-        void SubscribeToTrigger(string trigger, Action<IRCMessage> CallBack);
-    }
+	public interface IIRCBot
+		: IIRCConnection
+	{
+		IList<IIRCPlugin> Plugins { get; }
+
+		void SubscribeToMessage(string regex, Action<IRCMessage> CallBack);
+	}
 }
