@@ -39,6 +39,9 @@
   <ItemGroup>
     <Compile Include="IRCBot\IIRCBot.cs" />
     <Compile Include="IRCBot\IRCBot.cs" />
+    <Compile Include="IRCBot\Tools\Extensions.cs" />
+    <Compile Include="IRCBot\Tools\RingBuffer.cs" />
+    <Compile Include="IRCBot\Plugins\FactoidPlugin.cs" />
     <Compile Include="IRCBot\Plugins\IIRCPlugin.cs" />
     <Compile Include="IRCBot\Plugins\IRCPluginBase.cs" />
     <Compile Include="IRCBot\Plugins\MetaPlugin.cs" />

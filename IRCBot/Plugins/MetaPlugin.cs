@@ -8,11 +8,9 @@ namespace IRCBot.Plugins
 	public class MetaPlugin
 		: IRCPluginBase
 	{
-		protected IList<IIRCPlugin> _plugins;
-
 		protected override bool Initialize()
 		{
-			Connection.SubscribeToMessage("!plugin .+", HandleMessage);
+			Bot.SubscribeToMessage("^!plugin", HandleMessage);
 
 			return true;
 		}

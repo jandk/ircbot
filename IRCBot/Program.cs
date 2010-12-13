@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using IRC;
 using System.Text.RegularExpressions;
+using IRCBot.Tools;
+using System.Linq;
 
 namespace IRCBot
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
+	class Program
+	{
+		static void Main(string[] args)
+		{
 			using (IRCBot bot = new IRCBot("irc.freenode.net", 6667, "tjoenbot"))
 			{
 				bot.Join("heleos");
@@ -19,20 +21,20 @@ namespace IRCBot
 					;
 			}
 
-            //const string rawMessage = ":tjoener!~tjoener@vm.tjoener.be PRIVMSG #heleos :dit is nen test";
-            //IRCMessage mess = IRCMessage.FromString(rawMessage);
-            //Console.WriteLine(rawMessage == mess.ToString());
+			//const string rawMessage = ":tjoener!~tjoener@vm.tjoener.be PRIVMSG #heleos :dit is nen test";
+			//IRCMessage mess = IRCMessage.FromString(rawMessage);
+			//Console.WriteLine(rawMessage == mess.ToString());
 
-            //var messages = from line in File.ReadAllLines("telnet.log")
-            //               let parsed = IRCMessage.FromString(line)
-            //               select new
-            //               {
-            //                   Equals = parsed.ToString() == line,
-            //                   OldMessage = line,
-            //                   NewMessage = parsed
-            //               };
+			//var messages = from line in File.ReadAllLines("telnet.log")
+			//               let parsed = IRCMessage.FromString(line)
+			//               select new
+			//               {
+			//                   Equals = parsed.ToString() == line,
+			//                   OldMessage = line,
+			//                   NewMessage = parsed
+			//               };
 
-            //var allMessages = messages.Where(x => !x.Equals).ToArray();
-        }
-    }
+			//var allMessages = messages.Where(x => !x.Equals).ToArray();
+		}
+	}
 }

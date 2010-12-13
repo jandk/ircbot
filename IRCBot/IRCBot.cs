@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 using IRC;
 using IRCBot.Plugins;
+using IRCBot.Tools;
 
 namespace IRCBot
 {
@@ -13,19 +14,13 @@ namespace IRCBot
 		: IRCConnection, IIRCBot
 	{
 
-		#region Subscription
-
-		class Subscription
-		{
-			public Regex Trigger { get; set; }
-			public Action<IRCMessage> Callback { get; set; }
-		}
-
-		#endregion
-
 		List<IIRCPlugin> _plugins;
-		List<Subscription> _subscriptions
-			= new List<Subscription>();
+
+		Dictionary<String, Action<IRCMessage>> _subscriptions
+			= new Dictionary<String, Action<IRCMessage>>();
+
+		RingBuffer<IRCMessage> _buffer
+			= new RingBuffer<IRCMessage>(100);
 
 
 		public IRCBot(string host, ushort port, string nick)
@@ -65,12 +60,13 @@ namespace IRCBot
 
 		public void SubscribeToMessage(string trigger, Action<IRCMessage> callback)
 		{
-			if (!_subscriptions.Any(s => s.Trigger.ToString() == trigger))
-				_subscriptions.Add(new Subscription()
-				{
-					Trigger = new Regex(trigger),
-					Callback = callback
-				});
+			if (!_subscriptions.ContainsKey(trigger))
+				_subscriptions.Add(trigger, callback);
+		}
+
+		public IEnumerable<IRCMessage> MessagesByUser(string user)
+		{
+			return _buffer.IterateReverse().Where(m => m.User == user);
 		}
 
 		#endregion
@@ -80,12 +76,14 @@ namespace IRCBot
 			if (e.Message.Command != "PRIVMSG")
 				return;
 
-			string message = e.Message.Message.Substring(1);
-			var matchedTriggers = _subscriptions.Where(s => s.Trigger.IsMatch(message));
+			_buffer.Write(e.Message);
 
-			foreach (var trigger in matchedTriggers)
-				trigger.Callback(e.Message);
+			var matchedCallbacks = from subscription in _subscriptions
+								   where Regex.IsMatch(e.Message.Message, subscription.Key)
+								   select subscription.Value;
+
+			foreach (var callback in matchedCallbacks)
+				callback(e.Message);
 		}
-
 	}
 }

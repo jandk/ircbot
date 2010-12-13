@@ -9,14 +9,14 @@ namespace IRCBot.Plugins
 	{
 		protected override bool Initialize()
 		{
-			Connection.SubscribeToMessage("!time", HandleMessage);
+			Bot.SubscribeToMessage("^!time$", HandleMessage);
 
 			return true;
 		}
 
 		protected void HandleMessage(IRCMessage message)
 		{
-			Connection.SendChannelMessage(
+			Bot.SendChannelMessage(
 				message.Channel,
 				String.Format("The time is now {0}.", DateTime.Now.ToShortTimeString())
 			);

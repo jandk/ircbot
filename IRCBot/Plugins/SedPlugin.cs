@@ -1,9 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 using IRC;
+using IRCBot.Tools;
 
 namespace IRCBot.Plugins
 {
@@ -12,49 +14,22 @@ namespace IRCBot.Plugins
 	{
 		// TODO: Match modifiers iI and g and number
 		const int NumberOfMessages = 5;
-		static readonly Regex SedRegex = new Regex(@"^([ds])/((?:\\/|[^/])+)/(?:((?:\\/|[^/])*)/)?([gi]+)?(?:\s+(\d+))?$");
-		static readonly Regex RepRegex = new Regex(@"\\\d");
+		const string Sed = @"^([ds])/((?:\\/|[^/])+)/(?:((?:\\/|[^/])*)/)?([gi]+)?(?:\s+(\d+))?$";
 
-		protected Dictionary<string, List<string>> _history
-			= new Dictionary<string, List<string>>();
+		static readonly Regex SedRegex = new Regex(Sed);
+		static readonly Regex RepRegex = new Regex(@"\\\d");
 
 		protected override bool Initialize()
 		{
-			Connection.SubscribeToMessage(".+", HandleMessage);
+			Bot.SubscribeToMessage(Sed, HandleMessage);
 
 			return true;
 		}
 
-		void HandleMessage(IRCMessage message)
-		{
-			if (SedRegex.IsMatch(message.Message))
-				SearchReplace(message);
-			else
-				AddSentence(message);
-		}
-
-		private void AddSentence(IRCMessage message)
-		{
-			if (!_history.ContainsKey(message.User))
-				_history.Add(message.User, new List<string>(NumberOfMessages));
-
-			var list = _history[message.User];
-
-			if (list.Count == NumberOfMessages)
-			{
-				for (int i = 0; i < NumberOfMessages - 1; i++)
-					list[i] = list[i + 1];
-
-				list.RemoveAt(NumberOfMessages - 1);
-			}
-
-			list.Add(message.Message);
-		}
-
-		private void SearchReplace(IRCMessage message)
+		private void HandleMessage(IRCMessage message)
 		{
 			// Weust` found this bug,
-			if (!_history.ContainsKey(message.User))
+			if (!Bot.MessagesByUser(message.User).Any())
 				return;
 
 			var match = SedRegex.Match(message.Message);
@@ -63,11 +38,15 @@ namespace IRCBot.Plugins
 			bool global = false;
 			bool caseInsensitive = false;
 
-			string modifier = match.Groups[4].Value;
-			if (modifier.Contains("g"))
-				global = true;
-			if (modifier.Contains("i") || modifier.Contains("I"))
-				caseInsensitive = true;
+			if (match.Groups[4].Success)
+			{
+				string modifier = match.Groups[4].Value;
+
+				if (modifier.Contains("g"))
+					global = true;
+				if (modifier.Contains("i") || modifier.Contains("I"))
+					caseInsensitive = true;
+			}
 
 			// 2: Check if the regex is valid.
 			Regex regex;
@@ -81,13 +60,9 @@ namespace IRCBot.Plugins
 			catch (ArgumentException) { return; }
 
 			// 3: Check for the message offset
-			int offset = 1;
+			int offset = 0;
 			if (match.Groups[5].Success)
-				offset = Convert.ToInt32(match.Groups[5].Value);
-
-			var list = _history[message.User];
-			if (offset > list.Count)
-				return;
+				offset = Convert.ToInt32(match.Groups[5].Value) - 1;
 
 			// 4: Check what mode we're in
 			string mode = match.Groups[1].Value;
@@ -97,7 +72,6 @@ namespace IRCBot.Plugins
 			{
 				if (match.Groups[3].Success)
 					return;
-
 			}
 			if (mode == "s")
 			{
@@ -109,16 +83,16 @@ namespace IRCBot.Plugins
 				replacement = RepRegex.Replace(replacement, "$$1");
 			}
 
-			string msg = list[list.Count - offset];
-			if (regex.IsMatch(msg))
+			var msg = Bot.MessagesByUser(message.User).Skip(offset).FirstOrDefault();
+			if (msg != null && regex.IsMatch(msg.Message))
 			{
 				// Send the edited message
-				Connection.SendChannelMessage(
+				Bot.SendChannelMessage(
 					message.Channel,
 					String.Format(
 						"{0} meant: {1}",
-						message.User,
-						regex.Replace(msg, replacement, global ? Int32.MaxValue : 1)
+						message.Nick,
+						regex.Replace(msg.Message, replacement, global ? Int32.MaxValue : 1)
 					)
 				);
 			}
