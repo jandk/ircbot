@@ -1,6 +1,5 @@
-﻿
+
 using System;
-using IRC;
 using System.IO;
 
 namespace IRCBot.Plugins

@@ -1,10 +1,11 @@
-﻿
+
 using System;
-using IRC;
 using System.Collections.Generic;
 using System.IO;
-using IRCBot.Tools;
 using System.Linq;
+
+using IRC;
+using IRCBot.Tools;
 
 namespace IRCBot.Plugins
 {

@@ -36,7 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IRC\IIRCConnection.cs" />
-    <Compile Include="IRC\IRCChannelMessage.cs" />
     <Compile Include="IRC\IRCCommandEventArgs.cs" />
     <Compile Include="IRC\IRCConnection.cs" />
     <Compile Include="IRC\IRCMessage.cs" />

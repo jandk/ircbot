@@ -1,11 +1,9 @@
-﻿
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 using IRC;
-using IRCBot.Tools;
 
 namespace IRCBot.Plugins
 {
