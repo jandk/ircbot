@@ -27,7 +27,7 @@ namespace IRCBot.Plugins
 		private void HandleMessage(IRCMessage message)
 		{
 			// Weust` found this bug,
-			if (!Bot.MessagesByUser(message.User).Any())
+			if (!Bot.MessagesByUser(message.User).Any(m => !SedRegex.IsMatch(m.Message)))
 				return;
 
 			var match = SedRegex.Match(message.Message);
@@ -81,7 +81,10 @@ namespace IRCBot.Plugins
 				replacement = RepRegex.Replace(replacement, "$$1");
 			}
 
-			var msg = Bot.MessagesByUser(message.User).Skip(offset).FirstOrDefault();
+			var msg = Bot.MessagesByUser(message.User).Where(m => !SedRegex.IsMatch(m.Message))
+													  .Skip(offset)
+													  .FirstOrDefault();
+
 			if (msg != null && regex.IsMatch(msg.Message))
 			{
 				// Send the edited message
