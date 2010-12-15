@@ -54,6 +54,7 @@ namespace IRC
 
 		public void Connect()
 		{
+			Console.WriteLine("Connecting to {0} on port {1} ...", _host, _port);
 			_client = new TcpClient(_host, _port);
 			_stream = _client.GetStream();
 			_reader = new StreamReader(_stream);
@@ -88,6 +89,7 @@ namespace IRC
 		{
 			_quit = true;
 
+			Console.WriteLine("Disconnecting...");
 			IRCMessage ircMessage = new IRCMessage();
 			ircMessage.Command = "QUIT";
 
@@ -108,6 +110,7 @@ namespace IRC
 			if (_channels.Contains(channel))
 				return;
 
+			Console.WriteLine("JOINing channel #{0}...", channel);
 			IRCMessage message = new IRCMessage();
 			message.Command = "JOIN";
 			message.Params.Add("#" + channel);
@@ -125,6 +128,7 @@ namespace IRC
 			if (!_channels.Contains(channel))
 				return;
 
+			Console.WriteLine("PARTing channel #{0}...", channel);
 			IRCMessage message = new IRCMessage();
 			message.Command = "PART";
 			message.Params.Add("#" + channel);
