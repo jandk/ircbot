@@ -10,16 +10,25 @@ namespace IRCBot.Plugins
 	{
 		protected override bool Initialize()
 		{
-			Bot.SubscribeToMessage("^!time$", HandleMessage);
+			Bot.SubscribeToMessage("^!time$", HandleTimeMessage);
+			Bot.SubscribeToMessage("^!date$", HandleDateMessage);
 
 			return true;
 		}
 
-		protected void HandleMessage(IRCMessage message)
+		protected void HandleTimeMessage(IRCMessage message)
 		{
 			Bot.SendChannelMessage(
 				message.Channel,
 				String.Format("The time is now {0}.", DateTime.Now.ToShortTimeString())
+			);
+		}
+		
+		protected void HandleDateMessage(IRCMessage message)
+		{
+			Bot.SendChannelMessage(
+				message.Channel,
+				String.Format("The date is now {0}.", DateTime.Now.ToShortDateString())
 			);
 		}
 	}
