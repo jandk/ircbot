@@ -4,3 +4,7 @@
 bin/
 obj/
 
+# Mono files
+*.pidb
+*.userprefs
+
