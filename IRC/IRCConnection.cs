@@ -93,8 +93,7 @@ namespace IRC
 			IRCMessage ircMessage = new IRCMessage();
 			ircMessage.Command = "QUIT";
 
-			if (!String.IsNullOrEmpty(message))
-				ircMessage.Message = message;
+			ircMessage.Message = message ?? String.Empty;
 
 			SendRawMessage(ircMessage);
 		}
