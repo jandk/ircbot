@@ -19,7 +19,34 @@ namespace IRCBot.Plugins
 
 		protected void HandleMessage(IRCMessage message)
 		{
+			string [] splittedString = message.Message.Split(' ');
+
+			if(splittedString.GetLength(0) > 1)
+			{
+				switch (splittedString[1]) {
+					case "list":
+						HandleMessageList(message);
+						break;
+					case "help":
+						Bot.SendChannelMessage(message.Channel, "Help for !plugin that still needs to be written.");
+						Bot.SendChannelMessage(message.Channel, "!plugin help - Shows help (this message)");
+						Bot.SendChannelMessage(message.Channel, "!plugin list - Shows list of loaded plugins");
+						break;
+					default:
+						Bot.SendChannelMessage(message.Channel, "Unknown command, use !plugin help to see the help.");
+						break;
+				}
+			}	else
+			{
+				Bot.SendChannelMessage(message.Channel, "Please provide a command, use !plugin help to see the help.");
+			}
+		}
+
+
+		protected void HandleMessageList(IRCMessage message)
+		{
 			List<string> pluginList = this.GetAllClasses("IRCBot.Plugins");
+
 			string answer = "Following plugins are currently loaded:";
 
 			foreach(string pluginName in pluginList)
@@ -28,7 +55,6 @@ namespace IRCBot.Plugins
 			answer += ".";
 
 			Bot.SendChannelMessage(message.Channel, answer);
-			//Console.WriteLine("pluginlist: "+pluginName);
 		}
 
 		/// <summary>
