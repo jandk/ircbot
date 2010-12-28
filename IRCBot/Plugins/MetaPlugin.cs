@@ -45,7 +45,7 @@ namespace IRCBot.Plugins
 
 		protected void HandleMessageList(IRCMessage message)
 		{
-			List<string> pluginList = this.GetAllClasses("IRCBot.Plugins");
+			List<string> pluginList = MetaPlugin.GetAllClasses("IRCBot.Plugins");
 
 			string answer = "Following plugins are currently loaded:";
 
