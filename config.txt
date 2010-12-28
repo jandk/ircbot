@@ -1,0 +1,4 @@
+﻿host    = xxx
+port    = 6667
+nick    = xxx
+channel = xxx

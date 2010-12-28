@@ -37,7 +37,6 @@
   <ItemGroup>
     <Compile Include="IRCBot\IIRCBot.cs" />
     <Compile Include="IRCBot\IRCBot.cs" />
-    <Compile Include="IRCBot\ReadConfig.cs" />
     <Compile Include="IRCBot\Tools\Extensions.cs" />
     <Compile Include="IRCBot\Tools\RingBuffer.cs" />
     <Compile Include="IRCBot\Plugins\FactoidPlugin.cs" />
@@ -53,6 +52,11 @@
       <Project>{E2ED01E9-CE95-46D5-B4B1-59856DCF4D58}</Project>
       <Name>IRC</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="config.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
