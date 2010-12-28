@@ -2,7 +2,7 @@
 <Project ToolsVersion="2.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3925F296-30E1-42DB-8928-7DADEA97D2FD}</ProjectGuid>
@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IRCBot</RootNamespace>
     <AssemblyName>IRCBot</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
@@ -36,6 +37,7 @@
   <ItemGroup>
     <Compile Include="IRCBot\IIRCBot.cs" />
     <Compile Include="IRCBot\IRCBot.cs" />
+    <Compile Include="IRCBot\ReadConfig.cs" />
     <Compile Include="IRCBot\Tools\Extensions.cs" />
     <Compile Include="IRCBot\Tools\RingBuffer.cs" />
     <Compile Include="IRCBot\Plugins\FactoidPlugin.cs" />
