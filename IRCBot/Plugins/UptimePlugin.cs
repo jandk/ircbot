@@ -21,6 +21,7 @@ namespace IRCBot.Plugins
 
 			string uptimeMSG = "I'm running for ";
 			if(uptime.Days != 0) 	uptimeMSG += uptime.Days + " days, ";
+			if(uptime.Hours != 0) 	uptimeMSG += uptime.Hours + " hours, ";
 			if(uptime.Minutes != 0) uptimeMSG += uptime.Minutes + " minutes and ";
 			uptimeMSG += uptime.Seconds + " seconds.";
 
