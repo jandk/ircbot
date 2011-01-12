@@ -45,6 +45,7 @@
     <Compile Include="IRCBot\Plugins\MetaPlugin.cs" />
     <Compile Include="IRCBot\Plugins\SedPlugin.cs" />
     <Compile Include="IRCBot\Plugins\TimePlugin.cs" />
+    <Compile Include="IRCBot\Plugins\InternetMeme.cs" />
     <Compile Include="IRCBot\Program.cs" />
   </ItemGroup>
   <ItemGroup>
