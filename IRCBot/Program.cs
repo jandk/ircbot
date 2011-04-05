@@ -26,7 +26,7 @@ namespace IRCBot
 
 		static StringDictionary ReadConfig()
 		{
-			if (!Directory.Exists(Config))
+			if (!File.Exists(Config))
 				throw new Exception("Config file not found.");
 
 			StringDictionary config = new StringDictionary();
