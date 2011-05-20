@@ -76,6 +76,9 @@ namespace IRCBot
 			if (e.Message.Command != "PRIVMSG")
 				return;
 
+			if (e.Message.StarsWith("\u0001")
+				return;
+
 			_buffer.Write(e.Message);
 
 			var matchedCallbacks = from subscription in _subscriptions
