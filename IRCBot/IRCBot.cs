@@ -76,7 +76,7 @@ namespace IRCBot
 			if (e.Message.Command != "PRIVMSG")
 				return;
 
-			if (e.Message.StarsWith("\u0001")
+			if (e.Message.Message.StartsWith("\u0001"))
 				return;
 
 			_buffer.Write(e.Message);
