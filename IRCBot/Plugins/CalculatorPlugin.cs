@@ -282,6 +282,10 @@ namespace Calculator
 		{
 			switch (ts.Current.Kind)
 			{
+				case Kind.Minus:
+					ts.MoveNext();
+					return -factor(ts);
+
 				case Kind.Num:
 					double value = ts.Current.Value;
 					ts.MoveNext();
