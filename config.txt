@@ -2,3 +2,5 @@
 port    = 6667
 nick    = xxx
 channel = xxx
+
+url.key = xxx
