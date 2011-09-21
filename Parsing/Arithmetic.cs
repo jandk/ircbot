@@ -148,12 +148,10 @@ namespace Parsing.Arithmetic
 				Throw("Expected a digit");
 
 			// Integer part
-			if (Maybe('0'))
-				return 0;
-
 			double d = 0;
-			while (Peek().IsDec())
-				d = (d * 10) + Read().FromDec();
+			if (!Maybe('0'))
+				while (Peek().IsDec())
+					d = (d * 10) + Read().FromDec();
 
 			// Fractional part
 			if (Maybe('.'))
