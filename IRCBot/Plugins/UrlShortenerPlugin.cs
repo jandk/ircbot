@@ -48,13 +48,9 @@ namespace IRCBot.Plugins
 			table.Add("longUrl", match.Value);
 			string json = JsonWriter.Write(table);
 
-			Console.WriteLine("Found url: " + match.Value);
-
 			// Post the data to the google url api
 			poster.Headers.Add(HttpRequestHeader.ContentType, "application/json");
 			poster.UploadStringAsync(ApiUrl, null, json, message);
-
-			Console.WriteLine("Waiting for reply...");
 		}
 
 		void HandleReply(object sender, UploadStringCompletedEventArgs e)
@@ -64,8 +60,6 @@ namespace IRCBot.Plugins
 				Console.WriteLine("Got status: " + e.Error.ToString());
 				return;
 			}
-
-			Console.WriteLine("Got reply: " + e.Result);
 
 			// Google api always returns an object
 			Hashtable result = (Hashtable)parser.Parse(scanner.Scan(new StringReader(e.Result)));
@@ -81,6 +75,5 @@ namespace IRCBot.Plugins
 			string channel = ((IRCMessage)e.UserState).Channel;
 			Bot.SendChannelMessage(channel, message);
 		}
-
 	}
 }
