@@ -43,9 +43,13 @@
     <Compile Include="IRCBot\Config.cs" />
     <Compile Include="IRCBot\IIRCBot.cs" />
     <Compile Include="IRCBot\IRCBot.cs" />
+    <Compile Include="IRCBot\Parsing\Arithmetic.cs" />
+    <Compile Include="IRCBot\Parsing\Json.cs" />
+    <Compile Include="IRCBot\Parsing\ParserBase.cs" />
     <Compile Include="IRCBot\Plugins\CalculatorPlugin.cs" />
     <Compile Include="IRCBot\Plugins\UptimePlugin.cs" />
     <Compile Include="IRCBot\Plugins\UrlShortenerPlugin.cs" />
+    <Compile Include="IRCBot\Singleton.cs" />
     <Compile Include="IRCBot\Tools\Extensions.cs" />
     <Compile Include="IRCBot\Tools\RingBuffer.cs" />
     <Compile Include="IRCBot\Plugins\FactoidPlugin.cs" />
@@ -56,10 +60,6 @@
     <Compile Include="IRCBot\Plugins\TimePlugin.cs" />
     <Compile Include="IRCBot\Plugins\InternetMeme.cs" />
     <Compile Include="IRCBot\Program.cs" />
-    <Compile Include="Parsing\Arithmetic.cs" />
-    <Compile Include="Parsing\Json.cs" />
-    <Compile Include="Parsing\ParserBase.cs" />
-    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="IRC.csproj">
