@@ -33,6 +33,9 @@ namespace IRCBot.Plugins
 
 		protected void ShortenUrl(IRCMessage message)
 		{
+			if (message.Message.StartsWith("!"))
+				return;
+
 			Match match = Regex.Match(message.Message, UrlRegex);
 
 			// Skip shortened urls
