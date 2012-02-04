@@ -260,6 +260,43 @@ namespace Parsing.Arithmetic
 	class Parser
 		: ParserBase<Token>
 	{
+		
+		#region Defines
+		
+		static readonly Dictionary<string, Func<double,double>> Functions
+			= new Dictionary<string, Func<double, double>>()
+		{
+			{"log2", Log2},
+			{"log10", Math.Log10},
+			{"log", Math.Log},
+			{"exp", Math.Exp},
+			{"sqrt", Math.Sqrt},
+			{"floor", Math.Floor},
+			{"ceil", Math.Ceiling},
+			{"sin", Math.Sin},
+			{"cos", Math.Cos},
+			{"tan", Math.Tan},
+			{"asin", Math.Asin},
+			{"acos", Math.Acos},
+			{"atan", Math.Atan},
+			{"sinh", Math.Sinh},
+			{"cosh", Math.Cosh},
+			{"tanh", Math.Tanh},
+		};
+		
+		static readonly Dictionary<string, double> Constants
+			= new Dictionary<string, double>()
+		{
+			{"e", Math.E},
+			{"pi", Math.PI},
+		};
+		
+		static double Log2(double value)
+		{
+			return Math.Log(value) / Math.Log(2);
+		}
+		
+		#endregion
 
 		#region IParser<T> Members
 
@@ -312,6 +349,9 @@ namespace Parsing.Arithmetic
 				case Kind.OpDivide:
 					_ts.MoveNext();
 					return termCont(inval / factor());
+				case Kind.OpModulo:
+					_ts.MoveNext();
+					return termCont(inval % factor());
 				default:
 					return inval;
 			}
@@ -321,9 +361,39 @@ namespace Parsing.Arithmetic
 		{
 			switch (_ts.Current.Kind)
 			{
+				case Kind.Identifier:
+					if (Constants.ContainsKey(_ts.Current.StringValue))
+					{
+						string identifier = _ts.Current.StringValue;
+						_ts.MoveNext();
+						return Constants[identifier];
+					}
+				
+					if (Functions.ContainsKey(_ts.Current.StringValue))
+					{
+						string identifier = _ts.Current.StringValue;
+						_ts.MoveNext();
+						if (_ts.Current.Kind != Kind.ParenLeft)
+							throw new Exception("Parse error: expected '('");
+						_ts.MoveNext();
+						double exprValue = expr();
+						if (_ts.Current.Kind != Kind.ParenRight)
+							throw new Exception("Parse error: expected ')'");
+						_ts.MoveNext();
+					
+						return Functions[identifier](exprValue);
+					}
+				
+					throw new Exception("Parse error: invalid identifier - " + _ts.Current.StringValue);
+
 				case Kind.Number:
 					double value = _ts.Current.DoubleValue;
 					_ts.MoveNext();
+					if (_ts.Current.Kind == Kind.OpFactorial)
+					{
+						value = factorial(value);
+						_ts.MoveNext();
+					}
 					return value;
 
 				case Kind.ParenLeft:
@@ -335,8 +405,23 @@ namespace Parsing.Arithmetic
 					return exprValue;
 
 				default:
-					throw new ApplicationException("Parse error: expected number or '('");
+					throw new Exception("Parse error: expected number or '('");
 			}
+		}
+		
+		static double factorial(double value)
+		{
+			if (value < 0)
+				throw new ArgumentOutOfRangeException("value", "cannot be negative");
+			
+			if (value == 0)
+				return 1;
+			
+			double fact = 1;
+			for(int i = 2; i <= (int)value; i++)
+				fact *= i;
+			
+			return fact;
 		}
 	}
 
