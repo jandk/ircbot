@@ -44,7 +44,18 @@ namespace Parsing
 
 			throw new Exception("Invalid hexadecimal character");
 		}
-
+		
+		public static bool IsAlpha(this int c)
+		{
+			return
+				(c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z');
+		}
+		
+		public static char FromAlpha(this int c)
+		{
+			return (char)c;
+		}
 	}
 
 	#endregion

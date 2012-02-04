@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Parsing.Arithmetic
 {
@@ -14,12 +15,16 @@ namespace Parsing.Arithmetic
 		ParenLeft,
 		ParenRight,
 		Number,
+		Identifier,
 
 		// Operators
 		OpAdd,
 		OpSubtract,
 		OpMultiply,
 		OpDivide,
+		OpModulo,
+		OpPower,
+		OpFactorial,
 	}
 
 	#endregion
@@ -31,11 +36,13 @@ namespace Parsing.Arithmetic
 	{
 
 		private Kind _kind;
-		private double _value;
+		private double _dblValue;
+		private string _strValue;
 
 
 		public Kind Kind { get { return _kind; } }
-		public double Value { get { return _value; } }
+		public double DoubleValue { get { return _dblValue; } }
+		public string StringValue { get { return _strValue; } }
 
 
 		private Token(Kind kind)
@@ -46,7 +53,13 @@ namespace Parsing.Arithmetic
 		private Token(double value)
 		{
 			_kind = Kind.Number;
-			_value = value;
+			_dblValue = value;
+		}
+		
+		private Token(string value)
+		{
+			_kind = Kind.Identifier;
+			_strValue = value;
 		}
 
 
@@ -55,7 +68,9 @@ namespace Parsing.Arithmetic
 			switch (_kind)
 			{
 				case Kind.Number:
-					return "Number: " + _value.ToString();
+					return "Number: " + _dblValue.ToString(CultureInfo.InvariantCulture);
+				case Kind.Identifier:
+					return "Identifier: " + _strValue;
 				default:
 					return _kind.ToString();
 			}
@@ -68,6 +83,11 @@ namespace Parsing.Arithmetic
 		}
 
 		static public Token FromNumber(double value)
+		{
+			return new Token(value);
+		}
+		
+		static public Token FromIdentifier(string value)
 		{
 			return new Token(value);
 		}
@@ -96,6 +116,13 @@ namespace Parsing.Arithmetic
 					yield return Token.FromNumber(value);
 					continue;
 				}
+				
+				if (Peek().IsAlpha())
+				{
+					string value = ScanIdentifier();
+					yield return Token.FromIdentifier(value);
+					continue;
+				}
 
 				#region Operators
 
@@ -117,7 +144,15 @@ namespace Parsing.Arithmetic
 					case '/':
 						yield return Token.FromKind(Kind.OpDivide);
 						break;
-
+					
+					case '%':
+						yield return Token.FromKind(Kind.OpModulo);
+						break;
+					
+					case '!':
+						yield return Token.FromKind(Kind.OpFactorial);
+						break;
+					
 					case '(':
 						yield return Token.FromKind(Kind.ParenLeft);
 						break;
@@ -199,6 +234,22 @@ namespace Parsing.Arithmetic
 		}
 
 		#endregion
+		
+		#region Identifiers
+		
+		string ScanIdentifier()
+		{
+			if(!Peek().IsAlpha())
+				Throw("Expected a letter");
+			
+			string identifier = String.Empty;
+			while(Peek().IsAlpha())
+				identifier += Read().FromAlpha();
+			
+			return identifier;
+		}
+		
+		#endregion
 
 	}
 
@@ -271,7 +322,7 @@ namespace Parsing.Arithmetic
 			switch (_ts.Current.Kind)
 			{
 				case Kind.Number:
-					double value = _ts.Current.Value;
+					double value = _ts.Current.DoubleValue;
 					_ts.MoveNext();
 					return value;
 
