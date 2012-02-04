@@ -296,6 +296,21 @@ namespace Parsing.Arithmetic
 			return Math.Log(value) / Math.Log(2);
 		}
 		
+		static double Factorial(double value)
+		{
+			if (value < 0)
+				throw new ArgumentOutOfRangeException("value", "cannot be negative");
+			
+			if (value == 0)
+				return 1;
+			
+			double fact = 1;
+			for(int i = 2; i <= (int)value; i++)
+				fact *= i;
+			
+			return fact;
+		}
+
 		#endregion
 
 		#region IParser<T> Members
@@ -391,7 +406,7 @@ namespace Parsing.Arithmetic
 					_ts.MoveNext();
 					if (_ts.Current.Kind == Kind.OpFactorial)
 					{
-						value = factorial(value);
+						value = Factorial(value);
 						_ts.MoveNext();
 					}
 					return value;
@@ -407,21 +422,6 @@ namespace Parsing.Arithmetic
 				default:
 					throw new Exception("Parse error: expected number or '('");
 			}
-		}
-		
-		static double factorial(double value)
-		{
-			if (value < 0)
-				throw new ArgumentOutOfRangeException("value", "cannot be negative");
-			
-			if (value == 0)
-				return 1;
-			
-			double fact = 1;
-			for(int i = 2; i <= (int)value; i++)
-				fact *= i;
-			
-			return fact;
 		}
 	}
 
