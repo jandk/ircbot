@@ -181,11 +181,29 @@ namespace IRC
 
 		public void SendChannelMessage(string channel, string message)
 		{
+			// this allows to use SendChannelMessage("#channel", "/me some-message-here");
+			if(message.StartsWith("/me"))
+			{
+				SendChannelAction(channel, message.Remove(0,4));
+				return;
+			}
+
 			IRCMessage ircMessage = new IRCMessage();
 			ircMessage.Command = "PRIVMSG";
 			ircMessage.Params.Add("#" + channel);
 			ircMessage.Message = message;
 
+			SendRawMessage(ircMessage);
+		}
+
+		public void SendChannelAction( string channel, string message)
+		{
+			IRCMessage ircMessage = new IRCMessage();
+			ircMessage.Command = "PRIVMSG";
+			ircMessage.Params.Add("#" + channel);
+			// CTCP is used to implement the /me command (via CTCP ACTION).
+			// A CTCP message is implemented as a PRIVMSG or NOTICE where the first and last characters of the message are ASCII value 0x01.  
+			ircMessage.Message = '\u0001' + "ACTION " + message + '\u0001';
 			SendRawMessage(ircMessage);
 		}
 
