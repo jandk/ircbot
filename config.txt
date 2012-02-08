@@ -4,3 +4,4 @@ nick    = xxx
 channel = xxx
 
 url.key = xxx
+memesFile = memes.txt

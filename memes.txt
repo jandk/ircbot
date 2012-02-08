@@ -1,0 +1,63 @@
+# Memes
+# Ignores lines starting with '#' and lines without a \t
+# syntax: key\tresponse
+# __BOTNICK__ will be replaced by the bots nick on file-read
+# __USER__ will be replaced by the users nick which triggerd the trigger, on triggering.
+
+#Misc
+^orly	YARLY!
+^nope	Chuck Testa!
+^fash	JES?
+
+#Fishbot
+^hello __BOTNICK__$	Hi __USER__!
+^.lp Matutian$	ERROR: StupidityIndexOutOfBoundsException
+^badger badger badger badger badger badger badger badger badger badger badger badger	mushroom mushroom!
+^snake	Ah snake a snake! Snake, a snake! Ooooh, it's a snake!
+^carrots handbags cheese.	toilets russians planets hamsters weddings poets stalin KUALA LUMPUR! pygmies budgies KUALA LUMPUR!
+^sledgehammer	sledgehammers go quack!
+^Any sentence with vinegar and aftershock in it	Ah, a true connoisseur!
+^moo?	To moo, or not to moo, that is the question. Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fish...
+^herring	herring(n): Useful device for chopping down tall trees. Also moos (see fish).
+^hampster	__USER__: There is no 'p' in hamster you retard.
+^ag	Ag, ag ag ag ag ag AG AG AG!
+^__BOTNICK__ owns	Aye, I do.
+^vinegar	Nope, too sober for vinegar. Try later.
+^martian	Don't run! We are your friends!
+^just then, he fell into the sea	Ooops!
+^aftershock	mmmm, Aftershock.
+^why are you here?	Same reason. I love candy.
+^spoon	There is no spoon.
+^bounce	moo
+^crack	Doh, there goes another bench!
+^you can't just pick people at random!	I can do anything I like, __USER__, I'm eccentric! Rrarrrrrgh! Go!
+^wertle	moo
+^flibble	plob
+^www.outwar.com	would you please GO AWAY with that outwar rubbish!
+^__BOTNICK__ created splidge	omg no! Think I could show my face around here if I was responsible for THAT?
+^now there's more than one of them?	A lot more.
+^I want everything	Would that include a bullet from this gun?
+^we are getting aggravated.	Yes, we are.
+^atlantis	Beware the underwater headquarters of the trout and their bass henchmen. From there they plan their attacks on other continents.
+^oh god", __BOTNICK__ will suffice.
+^__BOTNICK__	Yes?
+^what is the matrix?	No-one can be told what the matrix is. You have to see it for yourself.
+^what do you need?	Guns. Lots of guns.
+^I know Kungfu	Show me.
+^cake	fish
+^trout go moo	Aye, that's cos they're fish.
+^Kangaroo	The kangaroo is a four winged stinging insect.
+^bass	Beware of the mutant sea bass and their laser cannons!
+^trout	Trout are freshwater fish and have underwater weapons.
+^where are we?	Last time I looked, we were in #channel.
+^where do you want to go today?	anywhere but redmond .
+^cows go moo	__USER__: only when they are impersonating fish.
+^fish go blubb	__USER__ LIES! Fish don't go blubb! fish go m00!
+^you know who else moos	__USER__: YA MUM!
+^If there's one thing I know for sure, it's that fish don't m00.	__USER__: HERETIC! UNBELIEVER!
+^__BOTNICK__: Muahahaha. Ph33r the dark side. 	__USER__: You smell .
+^ammuu?	__USER__: fish go m00 oh yes they do!
+^fish	__USER__: fish go m00!
+# /me's
+^fish go moo	/me notes that __USER__ is truly enlightened.
+^how old are you, __BOTNICK__?	/me is older than time itself.
