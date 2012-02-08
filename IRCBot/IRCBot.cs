@@ -81,9 +81,9 @@ namespace IRCBot
 
 			_buffer.Write(e.Message);
 
-			var matchedCallbacks = from subscription in _subscriptions
-								   where Regex.IsMatch(e.Message.Message, subscription.Key)
-								   select subscription.Value;
+			var matchedCallbacks = (from subscription in _subscriptions
+								    where Regex.IsMatch(e.Message.Message, subscription.Key)
+								    select subscription.Value).ToArray();
 
 			foreach (var callback in matchedCallbacks)
 				callback(e.Message);
