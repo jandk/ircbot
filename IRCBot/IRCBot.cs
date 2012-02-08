@@ -64,6 +64,14 @@ namespace IRCBot
 				_subscriptions.Add(trigger, callback);
 		}
 
+		public void UnsubscribeFromMessage(string trigger)
+		{
+			if(_subscriptions.ContainsKey(trigger))
+				_subscriptions.Remove(trigger);
+			else
+				throw new Exception(String.Format("Impossible to unsubscribe from message '{0}'", trigger));
+		}
+
 		public IEnumerable<IRCMessage> MessagesByUser(string user)
 		{
 			return _buffer.IterateReverse().Where(m => m.User == user);

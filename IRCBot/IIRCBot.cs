@@ -14,5 +14,6 @@ namespace IRCBot
 
 		IEnumerable<IRCMessage> MessagesByUser(string user);
 		void SubscribeToMessage(string regex, Action<IRCMessage> CallBack);
+		void UnsubscribeFromMessage(string regex);
 	}
 }
