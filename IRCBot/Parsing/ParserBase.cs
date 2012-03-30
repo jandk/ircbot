@@ -162,9 +162,8 @@ namespace Parsing
 
 		protected void Expect(string e)
 		{
-			int c;
 			for (int i = 0; i < e.Length; i++)
-				if ((c = Read()) != e[i])
+				if (Read() != e[i])
 					Throw(String.Format("Error in expected string '{0}' on place '{1}'", e, i));
 		}
 
