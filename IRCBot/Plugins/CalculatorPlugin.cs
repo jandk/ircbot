@@ -16,7 +16,7 @@ namespace IRCBot.Plugins
 
 		protected override bool Initialize()
 		{
-			Bot.SubscribeToMessage(@"^= *[\d(]", HandleCalculation);
+			Bot.SubscribeToMessage(@"^= *[a-z0-9(]", HandleCalculation);
 
 			return true;
 		}
