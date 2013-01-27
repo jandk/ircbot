@@ -12,7 +12,7 @@ namespace IRCBot.Plugins
 	public class FactoidPlugin
 		: IRCPluginBase
 	{
-		protected Dictionary<String, List<String>> _factoids
+		private Dictionary<String, List<String>> _factoids
 			= new Dictionary<string, List<string>>();
 
 		protected override bool Initialize()

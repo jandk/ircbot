@@ -13,7 +13,7 @@ namespace IRCBot
 		IList<IIRCPlugin> Plugins { get; }
 
 		IEnumerable<IRCMessage> MessagesByUser(string user);
-		void SubscribeToMessage(string regex, Action<IRCMessage> CallBack);
+		void SubscribeToMessage(string regex, Action<IRCMessage> callBack);
 		void UnsubscribeFromMessage(string regex);
 	}
 }

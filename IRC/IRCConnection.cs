@@ -13,11 +13,11 @@ namespace IRC
 
 		#region Fields
 
-		private string _host;
-		private ushort _port;
-		private string _nick;
+		private readonly string _host;
+		private readonly ushort _port;
+		private readonly string _nick;
 
-		private bool _quit = false;
+		private bool _quit;
 
 		private TcpClient _client;
 		private NetworkStream _stream;
@@ -25,7 +25,7 @@ namespace IRC
 		private StreamWriter _writer;
 		private Thread _listenThread;
 
-		private List<string> _channels
+		private readonly List<string> _channels
 			 = new List<string>();
 
 		#endregion
@@ -62,11 +62,8 @@ namespace IRC
 			_listenThread = new Thread(Listen);
 			_listenThread.Start();
 
-			IRCMessage message;
-
 			// Send USER
-			message = new IRCMessage();
-			message.Command = "USER";
+			var message = new IRCMessage { Command = "USER" };
 			message.Params.Add(_nick);
 			message.Params.Add("0");
 			message.Params.Add("*");
@@ -74,8 +71,7 @@ namespace IRC
 			SendRawMessage(message);
 
 			// Send NICK
-			message = new IRCMessage();
-			message.Command = "NICK";
+			message = new IRCMessage { Command = "NICK" };
 			message.Params.Add(_nick);
 			SendRawMessage(message);
 		}
@@ -90,10 +86,11 @@ namespace IRC
 			_quit = true;
 
 			Console.WriteLine("Disconnecting...");
-			IRCMessage ircMessage = new IRCMessage();
-			ircMessage.Command = "QUIT";
-
-			ircMessage.Message = message ?? String.Empty;
+			var ircMessage = new IRCMessage
+			{
+				Command = "QUIT",
+				Message = message ?? String.Empty
+			};
 
 			SendRawMessage(ircMessage);
 		}
@@ -110,8 +107,7 @@ namespace IRC
 				return;
 
 			Console.WriteLine("JOINing channel #{0}...", channel);
-			IRCMessage message = new IRCMessage();
-			message.Command = "JOIN";
+			var message = new IRCMessage { Command = "JOIN" };
 			message.Params.Add("#" + channel);
 			SendRawMessage(message);
 
@@ -128,8 +124,7 @@ namespace IRC
 				return;
 
 			Console.WriteLine("PARTing channel #{0}...", channel);
-			IRCMessage message = new IRCMessage();
-			message.Command = "PART";
+			var message = new IRCMessage { Command = "PART" };
 			message.Params.Add("#" + channel);
 			SendRawMessage(message);
 
@@ -182,24 +177,22 @@ namespace IRC
 		public void SendChannelMessage(string channel, string message)
 		{
 			// this allows to use SendChannelMessage("#channel", "/me some-message-here");
-			if(message.StartsWith("/me"))
+			if (message.StartsWith("/me"))
 			{
-				SendChannelAction(channel, message.Remove(0,4));
+				SendChannelAction(channel, message.Remove(0, 4));
 				return;
 			}
 
-			IRCMessage ircMessage = new IRCMessage();
-			ircMessage.Command = "PRIVMSG";
+			var ircMessage = new IRCMessage { Command = "PRIVMSG" };
 			ircMessage.Params.Add("#" + channel);
 			ircMessage.Message = message;
 
 			SendRawMessage(ircMessage);
 		}
 
-		public void SendChannelAction( string channel, string message)
+		public void SendChannelAction(string channel, string message)
 		{
-			IRCMessage ircMessage = new IRCMessage();
-			ircMessage.Command = "PRIVMSG";
+			var ircMessage = new IRCMessage { Command = "PRIVMSG" };
 			ircMessage.Params.Add("#" + channel);
 			// CTCP is used to implement the /me command (via CTCP ACTION).
 			// A CTCP message is implemented as a PRIVMSG or NOTICE where the first and last characters of the message are ASCII value 0x01.  

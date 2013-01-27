@@ -1,5 +1,4 @@
 
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -55,7 +54,7 @@ namespace Parsing.Arithmetic
 			_kind = Kind.Number;
 			_dblValue = value;
 		}
-		
+
 		private Token(string value)
 		{
 			_kind = Kind.Identifier;
@@ -86,7 +85,7 @@ namespace Parsing.Arithmetic
 		{
 			return new Token(value);
 		}
-		
+
 		static public Token FromIdentifier(string value)
 		{
 			return new Token(value);
@@ -116,7 +115,7 @@ namespace Parsing.Arithmetic
 					yield return Token.FromNumber(value);
 					continue;
 				}
-				
+
 				if (Peek().IsAlpha())
 				{
 					string value = ScanIdentifier();
@@ -144,15 +143,15 @@ namespace Parsing.Arithmetic
 					case '/':
 						yield return Token.FromKind(Kind.OpDivide);
 						break;
-					
+
 					case '%':
 						yield return Token.FromKind(Kind.OpModulo);
 						break;
-					
+
 					case '!':
 						yield return Token.FromKind(Kind.OpFactorial);
 						break;
-					
+
 					case '(':
 						yield return Token.FromKind(Kind.ParenLeft);
 						break;
@@ -234,21 +233,21 @@ namespace Parsing.Arithmetic
 		}
 
 		#endregion
-		
+
 		#region Identifiers
-		
+
 		string ScanIdentifier()
 		{
-			if(!Peek().IsAlpha())
+			if (!Peek().IsAlpha())
 				Throw("Expected a letter");
-			
+
 			string identifier = String.Empty;
-			while(Peek().IsAlpha())
+			while (Peek().IsAlpha())
 				identifier += Read().FromAlpha();
-			
+
 			return identifier;
 		}
-		
+
 		#endregion
 
 	}
@@ -260,10 +259,10 @@ namespace Parsing.Arithmetic
 	class Parser
 		: ParserBase<Token>
 	{
-		
+
 		#region Defines
-		
-		static readonly Dictionary<string, Func<double,double>> Functions
+
+		static readonly Dictionary<string, Func<double, double>> Functions
 			= new Dictionary<string, Func<double, double>>()
 		{
 			{"log2", Log2},
@@ -283,31 +282,31 @@ namespace Parsing.Arithmetic
 			{"cosh", Math.Cosh},
 			{"tanh", Math.Tanh},
 		};
-		
+
 		static readonly Dictionary<string, double> Constants
 			= new Dictionary<string, double>()
 		{
 			{"e", Math.E},
 			{"pi", Math.PI},
 		};
-		
+
 		static double Log2(double value)
 		{
 			return Math.Log(value) / Math.Log(2);
 		}
-		
+
 		static double Factorial(double value)
 		{
 			if (value < 0)
 				throw new ArgumentOutOfRangeException("value", "cannot be negative");
-			
+
 			if (value == 0)
 				return 1;
-			
+
 			double fact = 1;
-			for(int i = 2; i <= (int)value; i++)
+			for (int i = 2; i <= (int)value; i++)
 				fact *= i;
-			
+
 			return fact;
 		}
 
@@ -374,6 +373,7 @@ namespace Parsing.Arithmetic
 
 		double factor()
 		{
+			double exprValue;
 			switch (_ts.Current.Kind)
 			{
 				case Kind.Identifier:
@@ -383,7 +383,7 @@ namespace Parsing.Arithmetic
 						_ts.MoveNext();
 						return Constants[identifier];
 					}
-				
+
 					if (Functions.ContainsKey(_ts.Current.StringValue))
 					{
 						string identifier = _ts.Current.StringValue;
@@ -391,14 +391,14 @@ namespace Parsing.Arithmetic
 						if (_ts.Current.Kind != Kind.ParenLeft)
 							throw new Exception("Parse error: expected '('");
 						_ts.MoveNext();
-						double exprValue = expr();
+						exprValue = expr();
 						if (_ts.Current.Kind != Kind.ParenRight)
 							throw new Exception("Parse error: expected ')'");
 						_ts.MoveNext();
-					
+
 						return Functions[identifier](exprValue);
 					}
-				
+
 					throw new Exception("Parse error: invalid identifier - " + _ts.Current.StringValue);
 
 				case Kind.Number:
@@ -413,7 +413,7 @@ namespace Parsing.Arithmetic
 
 				case Kind.ParenLeft:
 					_ts.MoveNext();
-					double exprValue = expr();
+					exprValue = expr();
 					if (_ts.Current.Kind != Kind.ParenRight)
 						throw new Exception("Parse error: expected ')'");
 					_ts.MoveNext();

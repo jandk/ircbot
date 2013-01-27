@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-
 using IRC;
 
 namespace IRCBot.Plugins
@@ -11,7 +10,7 @@ namespace IRCBot.Plugins
 	class InternetMeme
 		: IRCPluginBase
 	{
-		private Dictionary<string, string> memes;
+		private Dictionary<string, string> _memes;
 
 
 		protected override bool Initialize()
@@ -27,7 +26,7 @@ namespace IRCBot.Plugins
 
 		protected void ParseAndSubscribeMemesFile()
 		{
-			memes = new Dictionary<string, string>();
+			_memes = new Dictionary<string, string>();
 			string memesFile = Config.Instance["memesFile"];
 
 			if (!File.Exists(memesFile))
@@ -39,15 +38,15 @@ namespace IRCBot.Plugins
 				if(line.IndexOf('\t') <=0 || line.StartsWith("#")) //Lines must have a tab and should not start with a #
 					continue;
 
-				string[] split = line.Split(new char[] {'\t'}, 2);
+				string[] split = line.Split(new[] {'\t'}, 2);
 				string trigger = split[0].Trim().Replace("__BOTNICK__", Config.Instance["nick"]);
 				string response = split[1].Trim();
 
-				if(!memes.ContainsKey(trigger))
-					memes.Add(trigger, response);
+				if(!_memes.ContainsKey(trigger))
+					_memes.Add(trigger, response);
 
 				// Subscribe to every trigger in the memes dictionary
-				foreach(KeyValuePair<string, string> pair in memes)
+				foreach(KeyValuePair<string, string> pair in _memes)
 					Bot.SubscribeToMessage(pair.Key + "$", HandleResponse);
 			}
 		}
@@ -55,10 +54,10 @@ namespace IRCBot.Plugins
 
 		protected void HandleResponse(IRCMessage message)
 		{
-			if (memes.ContainsKey("^" + message.Message))
+			if (_memes.ContainsKey("^" + message.Message))
 				Bot.SendChannelMessage(
 					message.Channel,
-					String.Format( memes["^"+message.Message].Replace("__USER__", message.Nick) )
+					String.Format( _memes["^"+message.Message].Replace("__USER__", message.Nick) )
 				);
 		}
 
@@ -69,7 +68,7 @@ namespace IRCBot.Plugins
 		{
 			
 			// Old (current) subscriptions should be unsubscribed first...
-			foreach(KeyValuePair<string, string> pair in memes)
+			foreach(KeyValuePair<string, string> pair in _memes)
 				Bot.UnsubscribeFromMessage(pair.Key + "$");
 
 			ParseAndSubscribeMemesFile();

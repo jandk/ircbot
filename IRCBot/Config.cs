@@ -18,7 +18,7 @@ namespace IRCBot
 			get
 			{
 				if (String.IsNullOrEmpty(key))
-					throw new ArgumentNullException("Invalid empty key");
+					throw new ArgumentNullException("key");
 
 				if (!_config.ContainsKey(key))
 					throw new Exception("Key does not exist");
@@ -47,7 +47,7 @@ namespace IRCBot
 				if (line.IndexOf('=') <= 0)
 					continue;
 
-				var split = line.Split(new char[] { '=' }, 2);
+				var split = line.Split(new[] { '=' }, 2);
 
 				if (!_config.ContainsKey(split[0].Trim()))
 					_config.Add(split[0].Trim(), split[1].Trim());

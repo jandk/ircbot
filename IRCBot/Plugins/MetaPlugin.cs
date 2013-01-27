@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using IRC;
@@ -19,11 +20,12 @@ namespace IRCBot.Plugins
 
 		protected void HandleMessage(IRCMessage message)
 		{
-			string [] splittedString = message.Message.Split(' ');
+			string[] splittedString = message.Message.Split(' ');
 
-			if(splittedString.GetLength(0) > 1)
+			if (splittedString.GetLength(0) > 1)
 			{
-				switch (splittedString[1]) {
+				switch (splittedString[1])
+				{
 					case "list":
 						HandleMessageList(message);
 						break;
@@ -36,23 +38,20 @@ namespace IRCBot.Plugins
 						Bot.SendChannelMessage(message.Channel, "Unknown command, use !plugin help to see the help.");
 						break;
 				}
-			}	else
-			{
-				Bot.SendChannelMessage(message.Channel, "Please provide a command, use !plugin help to see the help.");
 			}
+			else
+				Bot.SendChannelMessage(message.Channel, "Please provide a command, use !plugin help to see the help.");
 		}
 
 
 		protected void HandleMessageList(IRCMessage message)
 		{
-			List<string> pluginList = MetaPlugin.GetAllClasses("IRCBot.Plugins");
+			IEnumerable<string> pluginList = GetAllClasses("IRCBot.Plugins");
 
-			string answer = "Following plugins are currently loaded:";
-
-			foreach(string pluginName in pluginList)
-				answer += ", '"+pluginName+"'";
-
-			answer += ".";
+			string answer = pluginList.Aggregate(
+				"Following plugins are currently loaded:",
+				(current, pluginName) => current + (", '" + pluginName + "'")
+			) + ".";
 
 			Bot.SendChannelMessage(message.Channel, answer);
 		}
@@ -63,30 +62,11 @@ namespace IRCBot.Plugins
 		/// </summary>
 		/// <param name="nameSpace">The namespace the user wants searched</param>
 		/// <returns></returns>
-		static List<string> GetAllClasses(string nameSpace)
+		static IEnumerable<string> GetAllClasses(string nameSpace)
 		{
-		    //create an Assembly and use its GetExecutingAssembly Method
-		    //http://msdn2.microsoft.com/en-us/library/system.reflection.assembly.getexecutingassembly.aspx
-		    Assembly asm = Assembly.GetExecutingAssembly();
-		    //create a list for the namespaces
-		    List<string> namespaceList = new List<string>();
-		    //create a list that will hold all the classes
-		    //the suplied namespace is executing
-		    List<string> returnList = new List<string>();
-		    //loop through all the "Types" in the Assembly using
-		    //the GetType method:
-		    //http://msdn2.microsoft.com/en-us/library/system.reflection.assembly.gettypes.aspx
-		    foreach (Type type in asm.GetTypes())
-		    {
-		        if (type.Namespace == nameSpace)
-		            namespaceList.Add(type.Name);
-		    }
-		    //now loop through all the classes returned above and add
-		    //them to our classesName list
-		    foreach (String className in namespaceList)
-		        returnList.Add(className);
-		    //return the list
-		    return returnList;
+			return (from type in Assembly.GetExecutingAssembly().GetTypes()
+					where type.Namespace == nameSpace
+					select type.Name).ToList();
 		}
 	}
 }

@@ -24,10 +24,10 @@ namespace IRCBot.Plugins
 		protected void HandleCalculation(IRCMessage message)
 		{
 			string formula = message.Message.Substring(1);
-			double result = 0;
 
 			try
 			{
+				double result;
 				using (var reader = new StringReader(formula))
 					result = (double)Parser.Parse(Scanner.Scan(reader));
 
@@ -42,8 +42,6 @@ namespace IRCBot.Plugins
 					message.Channel,
 					"Error: " + ex.Message
 				);
-
-				return;
 			}
 		}
 	}

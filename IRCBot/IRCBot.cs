@@ -16,10 +16,10 @@ namespace IRCBot
 
 		List<IIRCPlugin> _plugins;
 
-		Dictionary<String, Action<IRCMessage>> _subscriptions
+		private readonly Dictionary<String, Action<IRCMessage>> _subscriptions
 			= new Dictionary<String, Action<IRCMessage>>();
 
-		RingBuffer<IRCMessage> _buffer
+		private readonly RingBuffer<IRCMessage> _buffer
 			= new RingBuffer<IRCMessage>(100);
 
 
@@ -35,14 +35,15 @@ namespace IRCBot
 
 		private void LoadPlugins()
 		{
-			Type[] emptyTypeArray = new Type[0];
+			var emptyTypeArray = new Type[0];
 
 			_plugins = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
 						from type in assembly.GetTypes()
+						let constructorInfo = type.GetConstructor(emptyTypeArray)
+						where constructorInfo != null
 						where type.GetInterfaces().Contains(typeof(IIRCPlugin))
 							&& type.IsAbstract == false
-							&& type.GetConstructor(emptyTypeArray) != null
-						select type.GetConstructor(emptyTypeArray).Invoke(null)
+						select constructorInfo.Invoke(null)
 						).Cast<IIRCPlugin>().ToList();
 
 			foreach (var plugin in _plugins)
@@ -58,15 +59,15 @@ namespace IRCBot
 			get { return _plugins; }
 		}
 
-		public void SubscribeToMessage(string trigger, Action<IRCMessage> callback)
+		public void SubscribeToMessage(string trigger, Action<IRCMessage> callBack)
 		{
 			if (!_subscriptions.ContainsKey(trigger))
-				_subscriptions.Add(trigger, callback);
+				_subscriptions.Add(trigger, callBack);
 		}
 
 		public void UnsubscribeFromMessage(string trigger)
 		{
-			if(_subscriptions.ContainsKey(trigger))
+			if (_subscriptions.ContainsKey(trigger))
 				_subscriptions.Remove(trigger);
 			else
 				throw new Exception(String.Format("Impossible to unsubscribe from message '{0}'", trigger));
@@ -90,8 +91,8 @@ namespace IRCBot
 			_buffer.Write(e.Message);
 
 			var matchedCallbacks = (from subscription in _subscriptions
-								    where Regex.IsMatch(e.Message.Message, subscription.Key)
-								    select subscription.Value).ToArray();
+									where Regex.IsMatch(e.Message.Message, subscription.Key)
+									select subscription.Value).ToArray();
 
 			foreach (var callback in matchedCallbacks)
 				callback(e.Message);

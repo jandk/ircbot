@@ -1,7 +1,5 @@
 
 using System;
-using System.Collections.Specialized;
-using System.IO;
 
 namespace IRCBot
 {
@@ -9,9 +7,9 @@ namespace IRCBot
 	{
 
 		// TODO: Better location
-		static string ConfigFile = "config.txt";
+		private const string ConfigFile = "config.txt";
 
-		static void Main(string[] args)
+		static void Main()
 		{
 			Config.Instance.Initialize(ConfigFile);
 
@@ -19,13 +17,12 @@ namespace IRCBot
 			ushort port = Convert.ToUInt16(Config.Instance["port"]);
 			string nick = Config.Instance["nick"];
 
-			using (IRCBot bot = new IRCBot(host, port, nick))
+			using (var bot = new IRCBot(host, port, nick))
 			{
 				bot.Join(Config.Instance["channel"]);
 
 				Console.WriteLine("Press q to quit...");
-				while (Console.ReadKey(true).KeyChar != 'q')
-					;
+				while (Console.ReadKey(true).KeyChar != 'q') { }
 			}
 		}
 

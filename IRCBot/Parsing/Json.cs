@@ -55,8 +55,8 @@ namespace Parsing.Json
 	class Token
 		: IToken
 	{
-		private Kind _kind;
-		private object _value;
+		private readonly Kind _kind;
+		private readonly object _value;
 
 
 		public Kind Kind { get { return _kind; } }
@@ -98,7 +98,7 @@ namespace Parsing.Json
 			return String.Format(
 				"[Kind: {0}, Value: {1}]",
 				Kind.ToString(),
-				(Value ?? String.Empty).ToString()
+				Value ?? String.Empty
 			);
 		}
 
@@ -136,7 +136,7 @@ namespace Parsing.Json
 		: ScannerBase<Token>
 	{
 
-		private static StringBuilder _sb = new StringBuilder(1024);
+		private static readonly StringBuilder _sb = new StringBuilder(1024);
 
 		#region Strings
 
@@ -360,7 +360,7 @@ namespace Parsing.Json
 
 		ArrayList JsonArray()
 		{
-			ArrayList list = new ArrayList();
+			var list = new ArrayList();
 
 			_ts.MoveNext();
 			if (_ts.Current.Kind == Kind.BracketRight)
@@ -386,7 +386,7 @@ namespace Parsing.Json
 
 		Hashtable JsonObject()
 		{
-			Hashtable dict = new Hashtable();
+			var dict = new Hashtable();
 
 			_ts.MoveNext();
 			if (_ts.Current.Kind == Kind.BraceRight)
@@ -397,7 +397,7 @@ namespace Parsing.Json
 				if (_ts.Current.Kind != Kind.String)
 					throw new Exception("Expected 'String' or 'BraceRight', got " + _ts.Current.Kind.ToString());
 
-				string name = (string)_ts.Current.Value;
+				var name = _ts.Current.Value.ToString();
 
 				_ts.MoveNext();
 				if (_ts.Current.Kind != Kind.Colon)
@@ -443,13 +443,11 @@ namespace Parsing.Json
 
 	class JsonWriter
 	{
-
-		StringBuilder _sb = new StringBuilder(1024);
-
+		readonly StringBuilder _sb = new StringBuilder(1024);
 
 		public static string Write(object value)
 		{
-			JsonWriter writer = new JsonWriter();
+			var writer = new JsonWriter();
 			writer.Convert(value);
 			return writer._sb.ToString();
 		}
@@ -457,34 +455,32 @@ namespace Parsing.Json
 
 		void Convert(object value)
 		{
-			if (value is ArrayList)
+			var arrayList = value as ArrayList;
+			if (arrayList != null)
 			{
-				ArrayList list = (ArrayList)value;
-
 				_sb.Append('[');
 
-				foreach (var item in list)
+				foreach (var item in arrayList)
 				{
 					Convert(item);
 					_sb.Append(',');
 				}
 
-				if (list.Count > 0)
+				if (arrayList.Count > 0)
 					_sb.Length -= 1;
 
 				_sb.Append(']');
 				return;
 			}
 
-			else if (value is Hashtable)
+			var hashtable = value as Hashtable;
+			if (hashtable != null)
 			{
-				Hashtable hash = (Hashtable)value;
-
 				_sb.Append('{');
 
-				foreach (var item in hash)
+				foreach (var item in hashtable)
 				{
-					DictionaryEntry entry = (DictionaryEntry)item;
+					var entry = (DictionaryEntry)item;
 
 					Convert(entry.Key.ToString());
 					_sb.Append(':');
@@ -492,18 +488,18 @@ namespace Parsing.Json
 					_sb.Append(',');
 				}
 
-				if (hash.Count > 0)
+				if (hashtable.Count > 0)
 					_sb.Length -= 1;
 
 				_sb.Append('}');
+				return;
 			}
 
-			else if (value is string)
+			var s = value as string;
+			if (s != null)
 			{
-				string str = (string)value;
-
 				_sb.Append('"');
-				foreach (char c in str)
+				foreach (char c in s)
 				{
 					switch (c)
 					{
@@ -519,9 +515,10 @@ namespace Parsing.Json
 					}
 				}
 				_sb.Append('"');
+				return;
 			}
 
-			else if (value is double || value is int)
+			if (value is double || value is int)
 				_sb.Append(((IFormattable)value).ToString("G", NumberFormatInfo.InvariantInfo));
 
 			else if (value is bool)
@@ -532,7 +529,6 @@ namespace Parsing.Json
 
 			else throw new Exception("Cannot convert type");
 		}
-
 	}
 
 	#endregion

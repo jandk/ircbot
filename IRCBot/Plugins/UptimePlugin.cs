@@ -20,13 +20,13 @@ namespace IRCBot.Plugins
 		{
 			TimeSpan uptime = (DateTime.Now - StartTime);
 
-			string uptimeMSG = "I'm running for ";
-			if (uptime.Days != 0) uptimeMSG += uptime.Days + " days, ";
-			if (uptime.Hours != 0) uptimeMSG += uptime.Hours + " hours, ";
-			if (uptime.Minutes != 0) uptimeMSG += uptime.Minutes + " minutes and ";
-			uptimeMSG += uptime.Seconds + " seconds.";
+			string uptimeMsg = "I'm running for ";
+			if (uptime.Days != 0) uptimeMsg += uptime.Days + " days, ";
+			if (uptime.Hours != 0) uptimeMsg += uptime.Hours + " hours, ";
+			if (uptime.Minutes != 0) uptimeMsg += uptime.Minutes + " minutes and ";
+			uptimeMsg += uptime.Seconds + " seconds.";
 
-			Bot.SendChannelMessage(message.Channel, uptimeMSG);
+			Bot.SendChannelMessage(message.Channel, uptimeMsg);
 		}
 	}
 }

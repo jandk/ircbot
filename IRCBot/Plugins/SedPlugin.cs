@@ -11,7 +11,6 @@ namespace IRCBot.Plugins
 		: IRCPluginBase
 	{
 		// TODO: Match modifiers iI and g and number
-		const int NumberOfMessages = 5;
 		const string Sed = @"^([ds])/((?:\\/|[^/])+)/(?:((?:\\/|[^/])*)/)?([gi]+)?(?:\s+(\d+))?$";
 
 		static readonly Regex SedRegex = new Regex(Sed);
@@ -26,8 +25,8 @@ namespace IRCBot.Plugins
 
 		private void HandleMessage(IRCMessage message)
 		{
-			// Weust` found this bug,
-			if (!Bot.MessagesByUser(message.User).Any(m => !SedRegex.IsMatch(m.Message)))
+			// Weust` found this bug.
+			if (Bot.MessagesByUser(message.User).All(m => SedRegex.IsMatch(m.Message)))
 				return;
 
 			var match = SedRegex.Match(message.Message);

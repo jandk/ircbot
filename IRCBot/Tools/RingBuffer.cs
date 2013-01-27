@@ -6,19 +6,19 @@ namespace IRCBot.Tools
 {
 	public class RingBuffer<T>
 	{
-		T[] _buffer;
+		readonly T[] _buffer;
+		readonly int _cap;
 		int _off;
-		int _cap;
-		int _count;
+		int _cnt;
 
 		public int Count
 		{
-			get { return _count; }
+			get { return _cnt; }
 		}
 
 		public bool IsFull
 		{
-			get { return _count == _cap; }
+			get { return _cnt == _cap; }
 		}
 
 		public T this[int index]
@@ -55,14 +55,14 @@ namespace IRCBot.Tools
 			if (++_off == _cap)
 				_off = 0;
 
-			if (_count < _cap)
-				_count++;
+			if (_cnt < _cap)
+				_cnt++;
 		}
 
 		public IEnumerable<T> IterateReverse()
 		{
-			int s = IsFull ? _off + _cap - 1 : _count - 1;
-			int n = Math.Min(_count, _cap);
+			int s = IsFull ? _off + _cap - 1 : _cnt - 1;
+			int n = Math.Min(_cnt, _cap);
 
 			for (int i = 0; i < n; i++)
 			{
@@ -74,7 +74,7 @@ namespace IRCBot.Tools
 		public IEnumerable<T> Iterate()
 		{
 			int s = IsFull ? _off : 0;
-			int n = Math.Min(_count, _cap);
+			int n = Math.Min(_cnt, _cap);
 
 			for (int i = 0; i < n; i++)
 			{

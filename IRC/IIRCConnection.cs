@@ -1,6 +1,4 @@
 
-using System;
-
 namespace IRC
 {
 	public interface IIRCConnection

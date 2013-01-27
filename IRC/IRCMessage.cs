@@ -143,7 +143,7 @@ namespace IRC
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			// Add the prefix
 			bool hasServer = !String.IsNullOrEmpty(Server);
