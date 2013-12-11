@@ -43,9 +43,7 @@
     <Compile Include="IRCBot\Config.cs" />
     <Compile Include="IRCBot\IIRCBot.cs" />
     <Compile Include="IRCBot\IRCBot.cs" />
-    <Compile Include="IRCBot\Parsing\Arithmetic.cs" />
     <Compile Include="IRCBot\Parsing\Json.cs" />
-    <Compile Include="IRCBot\Parsing\ParserBase.cs" />
     <Compile Include="IRCBot\Plugins\CalculatorPlugin.cs" />
     <Compile Include="IRCBot\Plugins\UptimePlugin.cs" />
     <Compile Include="IRCBot\Plugins\UrlShortenerPlugin.cs" />
@@ -62,6 +60,10 @@
     <Compile Include="IRCBot\Program.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\parsing\Parsing\Parsing.csproj">
+      <Project>{E36A5B4B-33FC-4AE8-8990-9B7625C38B85}</Project>
+      <Name>Parsing</Name>
+    </ProjectReference>
     <ProjectReference Include="IRC.csproj">
       <Project>{E2ED01E9-CE95-46D5-B4B1-59856DCF4D58}</Project>
       <Name>IRC</Name>
