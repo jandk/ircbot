@@ -16,11 +16,9 @@ namespace IRCBot.Plugins
 		static readonly Regex SedRegex = new Regex(Sed);
 		static readonly Regex RepRegex = new Regex(@"\\\d");
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			Bot.SubscribeToMessage(Sed, HandleMessage);
-
-			return true;
 		}
 
 		private void HandleMessage(IRCMessage message)

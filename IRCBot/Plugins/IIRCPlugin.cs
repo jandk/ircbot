@@ -8,6 +8,6 @@ namespace IRCBot.Plugins
 		string Name { get; }
 		Stream Data { get; }
 
-		bool Initialize(IIRCBot connection);
+		void Initialize(IIRCBot connection);
 	}
 }

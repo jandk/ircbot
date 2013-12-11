@@ -8,12 +8,10 @@ namespace IRCBot.Plugins
 	class TimePlugin
 		: IRCPluginBase
 	{
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			Bot.SubscribeToMessage("^!time$", HandleTimeMessage);
 			Bot.SubscribeToMessage("^!date$", HandleDateMessage);
-
-			return true;
 		}
 
 		protected void HandleTimeMessage(IRCMessage message)
@@ -23,7 +21,7 @@ namespace IRCBot.Plugins
 				String.Format("The time is now {0}.", DateTime.Now.ToShortTimeString())
 			);
 		}
-		
+
 		protected void HandleDateMessage(IRCMessage message)
 		{
 			Bot.SendChannelMessage(

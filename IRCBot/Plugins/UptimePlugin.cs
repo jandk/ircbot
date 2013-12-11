@@ -10,10 +10,9 @@ namespace IRCBot.Plugins
 	{
 		static readonly DateTime StartTime = DateTime.Now;
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			Bot.SubscribeToMessage("^!uptime$", HandleMessage);
-			return true;
 		}
 
 		protected void HandleMessage(IRCMessage message)

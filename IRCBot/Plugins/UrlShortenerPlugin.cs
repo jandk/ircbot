@@ -30,12 +30,11 @@ namespace IRCBot.Plugins
 		private readonly Scanner _scanner = new Scanner();
 		private readonly Parser _parser = new Parser();
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			Bot.SubscribeToMessage(UrlRegexString, ShortenUrl);
 
 			_poster.UploadStringCompleted += HandleReply;
-			return true;
 		}
 
 		protected void ShortenUrl(IRCMessage message)

@@ -14,11 +14,9 @@ namespace IRCBot.Plugins
 		static readonly Scanner Scanner = new Scanner();
 		static readonly Parser Parser = new Parser();
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			Bot.SubscribeToMessage(@"^= *[a-z0-9(]", HandleCalculation);
-
-			return true;
 		}
 
 		protected void HandleCalculation(IRCMessage message)

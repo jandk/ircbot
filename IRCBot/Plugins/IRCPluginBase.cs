@@ -11,15 +11,15 @@ namespace IRCBot.Plugins
 		public string Name { get; protected set; }
 		public Stream Data { get; private set; }
 
-		public bool Initialize(IIRCBot bot)
+		public void Initialize(IIRCBot bot)
 		{
 			Bot = bot;
 			Name = GetType().Name;
 
-			return Initialize();
+			Initialize();
 		}
 
-		protected abstract bool Initialize();
+		protected abstract void Initialize();
 
 		#region IDisposable Members
 

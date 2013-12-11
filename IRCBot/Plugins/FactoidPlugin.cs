@@ -15,16 +15,11 @@ namespace IRCBot.Plugins
 		private Dictionary<String, List<String>> _factoids
 			= new Dictionary<string, List<string>>();
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
-			if (Data == null)
-				return false;
-
 			Bot.SubscribeToMessage("^!factoid", HandleMessage);
 
 			ReadAllFactoids();
-
-			return true;
 		}
 
 		private void ReadAllFactoids()
