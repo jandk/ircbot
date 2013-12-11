@@ -13,9 +13,18 @@ namespace IRCBot.Plugins
 	class UrlShortenerPlugin
 		: IRCPluginBase
 	{
-		const string UrlRegex = @"\b(https?|ftp)://[-A-Za-z0-9+&@#/%?=~_|$!:,.;]*[A-Za-z0-9+&@#/%=~_|$]";
+		const string UrlRegexString = @"\b(https?|ftp)://[-A-Z0-9+&@#/%?=~_|$!:,.;]*[A-Z0-9+&@#/%=~_|$]";
+		static readonly Regex UrlRegex = new Regex(UrlRegexString, RegexOptions.IgnoreCase);
+
 		static readonly string ApiKey = Config.Instance["url.key"];
 		static readonly Uri ApiUrl = new Uri(@"https://www.googleapis.com/urlshortener/v1/url?key=" + ApiKey);
+
+		static readonly string[] UrlShorteners = new[]
+        {
+            "goo.gl",
+            "youtu.be"
+        };
+
 
 		private readonly WebClient _poster = new WebClient();
 		private readonly Scanner _scanner = new Scanner();
@@ -23,22 +32,19 @@ namespace IRCBot.Plugins
 
 		protected override bool Initialize()
 		{
-			Bot.SubscribeToMessage(UrlRegex, ShortenUrl);
+			Bot.SubscribeToMessage(UrlRegexString, ShortenUrl);
 
 			_poster.UploadStringCompleted += HandleReply;
-
 			return true;
 		}
 
 		protected void ShortenUrl(IRCMessage message)
 		{
-			if (message.Message.StartsWith("!"))
-				return;
-
-			Match match = Regex.Match(message.Message, UrlRegex);
+			var match = UrlRegex.Match(message.Message);
+			var uri = new Uri(message.Message.Substring(match.Index, match.Length));
 
 			// Skip shortened urls
-			if (match.Value.Contains("goo.gl"))
+			if (Array.IndexOf(UrlShorteners, uri.Host) >= 0)
 				return;
 
 			// Skip short urls
