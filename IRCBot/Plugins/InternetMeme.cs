@@ -7,20 +7,18 @@ using IRC;
 
 namespace IRCBot.Plugins
 {
-	class InternetMeme
+	class MemePlugin
 		: IRCPluginBase
 	{
 		private Dictionary<string, string> _memes;
 
 
-		protected override bool Initialize()
+		protected override void Initialize()
 		{
 			//Parses memesFile into this class's memes dictionary and subscribes triggers
 			ParseAndSubscribeMemesFile();
 
 			Bot.SubscribeToMessage("^!reload memesFile$", HandleReloadmemesFile);
-			
-			return true;
 		}
 
 
@@ -30,23 +28,23 @@ namespace IRCBot.Plugins
 			string memesFile = Config.Instance["memesFile"];
 
 			if (!File.Exists(memesFile))
-				throw new Exception("memesFile '"+memesFile+"' does not exist");
+				throw new Exception("memesFile '" + memesFile + "' does not exist");
 
 			string[] lines = File.ReadAllLines(memesFile);
-			foreach(string line in lines)
+			foreach (string line in lines)
 			{
-				if(line.IndexOf('\t') <=0 || line.StartsWith("#")) //Lines must have a tab and should not start with a #
+				if (line.IndexOf('\t') <= 0 || line.StartsWith("#")) //Lines must have a tab and should not start with a #
 					continue;
 
-				string[] split = line.Split(new[] {'\t'}, 2);
+				string[] split = line.Split(new[] { '\t' }, 2);
 				string trigger = split[0].Trim().Replace("__BOTNICK__", Config.Instance["nick"]);
 				string response = split[1].Trim();
 
-				if(!_memes.ContainsKey(trigger))
+				if (!_memes.ContainsKey(trigger))
 					_memes.Add(trigger, response);
 
 				// Subscribe to every trigger in the memes dictionary
-				foreach(KeyValuePair<string, string> pair in _memes)
+				foreach (KeyValuePair<string, string> pair in _memes)
 					Bot.SubscribeToMessage(pair.Key + "$", HandleResponse);
 			}
 		}
@@ -57,7 +55,7 @@ namespace IRCBot.Plugins
 			if (_memes.ContainsKey("^" + message.Message))
 				Bot.SendChannelMessage(
 					message.Channel,
-					String.Format( _memes["^"+message.Message].Replace("__USER__", message.Nick) )
+					String.Format(_memes["^" + message.Message].Replace("__USER__", message.Nick))
 				);
 		}
 
@@ -66,9 +64,9 @@ namespace IRCBot.Plugins
 		// so the __BOTNICK__ vars will be correctly replaced
 		protected void HandleReloadmemesFile(IRCMessage message)
 		{
-			
+
 			// Old (current) subscriptions should be unsubscribed first...
-			foreach(KeyValuePair<string, string> pair in _memes)
+			foreach (KeyValuePair<string, string> pair in _memes)
 				Bot.UnsubscribeFromMessage(pair.Key + "$");
 
 			ParseAndSubscribeMemesFile();
