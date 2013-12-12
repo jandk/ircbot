@@ -35,11 +35,9 @@ namespace IRCBot
 
 		private void LoadPlugins()
 		{
-			var emptyTypeArray = new Type[0];
-
 			_plugins = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
 						from type in assembly.GetTypes()
-						let constructorInfo = type.GetConstructor(emptyTypeArray)
+						let constructorInfo = type.GetConstructor(Enumerable.Empty<Type>().ToArray())
 						where constructorInfo != null
 						where type.GetInterfaces().Contains(typeof(IIRCPlugin))
 							&& type.IsAbstract == false
