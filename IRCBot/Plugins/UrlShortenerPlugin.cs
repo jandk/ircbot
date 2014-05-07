@@ -13,8 +13,8 @@ namespace IRCBot.Plugins
 	class UrlShortenerPlugin
 		: IRCPluginBase
 	{
-		const string UrlRegexString = @"\b(https?|ftp)://[-A-Z0-9+&@#/%?=~_|$!:,.;]*[A-Z0-9+&@#/%=~_|$]";
-		static readonly Regex UrlRegex = new Regex(UrlRegexString, RegexOptions.IgnoreCase);
+		const string UrlRegexString = @"\b(https?|ftp)://[\w-+&@#/%?=~|$!:,.;]*[\w+&@#/%=~|$]";
+		static readonly Regex UrlRegex = new Regex(UrlRegexString);
 
 		static readonly string ApiKey = Config.Instance["url.key"];
 		static readonly Uri ApiUrl = new Uri(@"https://www.googleapis.com/urlshortener/v1/url?key=" + ApiKey);
