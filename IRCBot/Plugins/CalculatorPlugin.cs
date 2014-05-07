@@ -21,7 +21,7 @@ namespace IRCBot.Plugins
 
 			try
 			{
-				var value = MathInterpreter.Interpret(expression);
+				var value = MathInterpreter.InterpretSingle(expression);
 
 				Bot.SendChannelMessage(
 					message.Channel,
