@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Specialized;
 
@@ -8,7 +7,6 @@ namespace IRCBot
 	class Config
 		: Singleton<Config>
 	{
-
 		private StringDictionary _config;
 
 		private Config() { }
@@ -53,6 +51,5 @@ namespace IRCBot
 					_config.Add(split[0].Trim(), split[1].Trim());
 			}
 		}
-
 	}
 }

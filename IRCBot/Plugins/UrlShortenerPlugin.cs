@@ -25,7 +25,6 @@ namespace IRCBot.Plugins
             "youtu.be"
         };
 
-
 		private readonly WebClient _poster = new WebClient();
 		private readonly Scanner _scanner = new Scanner();
 		private readonly Parser _parser = new Parser();
