@@ -40,41 +40,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRCBot\Config.cs" />
-    <Compile Include="IRCBot\IIRCBot.cs" />
-    <Compile Include="IRCBot\IRCBot.cs" />
-    <Compile Include="IRCBot\Parsing\Json.cs" />
-    <Compile Include="IRCBot\Plugins\CalculatorPlugin.cs" />
-    <Compile Include="IRCBot\Plugins\UptimePlugin.cs" />
-    <Compile Include="IRCBot\Plugins\UrlShortenerPlugin.cs" />
-    <Compile Include="IRCBot\Singleton.cs" />
-    <Compile Include="IRCBot\Tools\Extensions.cs" />
-    <Compile Include="IRCBot\Tools\RingBuffer.cs" />
-    <Compile Include="IRCBot\Plugins\IIRCPlugin.cs" />
-    <Compile Include="IRCBot\Plugins\IRCPluginBase.cs" />
-    <Compile Include="IRCBot\Plugins\MetaPlugin.cs" />
-    <Compile Include="IRCBot\Plugins\SedPlugin.cs" />
-    <Compile Include="IRCBot\Plugins\TimePlugin.cs" />
-    <Compile Include="IRCBot\Plugins\InternetMeme.cs" />
-    <Compile Include="IRCBot\Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\parsing\Parsing\Parsing.csproj">
       <Project>{E36A5B4B-33FC-4AE8-8990-9B7625C38B85}</Project>
       <Name>Parsing</Name>
     </ProjectReference>
-    <ProjectReference Include="IRC.csproj">
+    <ProjectReference Include="..\IRC\IRC.csproj">
       <Project>{E2ED01E9-CE95-46D5-B4B1-59856DCF4D58}</Project>
       <Name>IRC</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="memes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="config\config.txt" />
+    <Content Include="config\memes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Config.cs" />
+    <Compile Include="IIRCBot.cs" />
+    <Compile Include="IRCBot.cs" />
+    <Compile Include="Parsing\Json.cs" />
+    <Compile Include="Plugins\CalculatorPlugin.cs" />
+    <Compile Include="Plugins\IIRCPlugin.cs" />
+    <Compile Include="Plugins\InternetMeme.cs" />
+    <Compile Include="Plugins\IRCPluginBase.cs" />
+    <Compile Include="Plugins\MetaPlugin.cs" />
+    <Compile Include="Plugins\SedPlugin.cs" />
+    <Compile Include="Plugins\TimePlugin.cs" />
+    <Compile Include="Plugins\UptimePlugin.cs" />
+    <Compile Include="Plugins\UrlShortenerPlugin.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="Tools\Extensions.cs" />
+    <Compile Include="Tools\RingBuffer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

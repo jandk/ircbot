@@ -36,10 +36,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRC\IIRCConnection.cs" />
-    <Compile Include="IRC\IRCCommandEventArgs.cs" />
-    <Compile Include="IRC\IRCConnection.cs" />
-    <Compile Include="IRC\IRCMessage.cs" />
+    <Compile Include="IIRCConnection.cs" />
+    <Compile Include="IRCCommandEventArgs.cs" />
+    <Compile Include="IRCConnection.cs" />
+    <Compile Include="IRCMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

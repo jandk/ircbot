@@ -1,13 +1,11 @@
-
 using System;
 
 namespace IRCBot
 {
 	class Program
 	{
-
 		// TODO: Better location
-		private const string ConfigFile = "config.txt";
+		private const string ConfigFile = "config/config.txt";
 
 		static void Main()
 		{
@@ -25,6 +23,5 @@ namespace IRCBot
 				while (Console.ReadKey(true).KeyChar != 'q') { }
 			}
 		}
-
 	}
 }

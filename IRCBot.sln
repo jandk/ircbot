@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRCBot", "IRCBot.csproj", "{3925F296-30E1-42DB-8928-7DADEA97D2FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRCBot", "IRCBot\IRCBot.csproj", "{3925F296-30E1-42DB-8928-7DADEA97D2FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRC", "IRC.csproj", "{E2ED01E9-CE95-46D5-B4B1-59856DCF4D58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRC", "IRC\IRC.csproj", "{E2ED01E9-CE95-46D5-B4B1-59856DCF4D58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing", "..\parsing\Parsing\Parsing.csproj", "{E36A5B4B-33FC-4AE8-8990-9B7625C38B85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing", "parsing\Parsing\Parsing.csproj", "{E36A5B4B-33FC-4AE8-8990-9B7625C38B85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
